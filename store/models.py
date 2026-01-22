@@ -13,6 +13,7 @@ class Collection(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=200)
+    slug = models.SlugField()
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     inventory = models.IntegerField()
@@ -36,6 +37,12 @@ class Customer(models.Model):
     phone = models.CharField(max_length=15, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
+
+    class Meta:
+        db_table = 'store_customers'
+        indexes = [
+            models.Index(fields=['last_name', 'first_name']),   
+        ]
 
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = 'P'
@@ -62,6 +69,7 @@ class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    zip_code = models.CharField(max_length=20, blank=True, null=True)
 
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
